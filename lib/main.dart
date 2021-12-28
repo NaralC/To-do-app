@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'package:flutter/material.dart';
 import 'database/db.dart';
 import 'database/todo_item.dart';
@@ -33,10 +32,68 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<ToDoItem> _todo = [];
   List<Widget>? get _items => _todo.map((item) => format(item)).toList();
+  String _name = '';
+
+  void _create(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Add Task"),
+        content: Form(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                autofocus: true,
+                decoration: InputDecoration(labelText: "Task Name"),
+                onChanged: (name) {
+                  _name = name;
+                },
+              )
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: Text("Save"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _save() async {
+    Navigator.of(context).pop();
+    ToDoItem item = ToDoItem();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Container(
+        child: ListView(
+          children: const [
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+              child: Text(
+                "To-Do",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.redAccent,
+        onPressed: () => _create(context),
+        child: Icon(Icons.add_circle, color: Colors.white),
+      ),
+    );
   }
 
   Widget format(ToDoItem item) {

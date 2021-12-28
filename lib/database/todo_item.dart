@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class ToDoItem {
   static String table = 'todo';
 

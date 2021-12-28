@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import '../database/todo_item.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
@@ -40,4 +39,6 @@ abstract class DB {
       print(exception);
     }
   }
+
+  static insert(String table) {}
 }
