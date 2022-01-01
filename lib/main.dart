@@ -34,6 +34,43 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> get _items => _todo.map((item) => format(item)).toList();
   String _name = '';
 
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Container(
+        child: ListView(
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
+              child: Text(
+                "To-Do",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListView(
+              children: _items,
+              shrinkWrap: true,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.redAccent,
+        onPressed: () => _create(context),
+        child: Icon(Icons.add_circle, color: Colors.white),
+      ),
+    );
+  }
+
   void _create(BuildContext context) {
     showDialog(
       context: context,
@@ -72,48 +109,10 @@ class _MyHomePageState extends State<MyHomePage> {
     refresh();
   }
 
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
   Future<void> refresh() async {
     List<Map<String, dynamic>> results = await DB.query(ToDoItem.table);
     _todo = results.map((item) => ToDoItem.fromMap(item)).toList();
     setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Container(
-        child: ListView(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
-              child: Text(
-                "To-Do",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            ListView(
-              children: _items,
-              shrinkWrap: true,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.redAccent,
-        onPressed: () => _create(context),
-        child: Icon(Icons.add_circle, color: Colors.white),
-      ),
-    );
   }
 
   Widget format(ToDoItem item) {
@@ -129,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
-                color: Theme.of(context).primaryColor,
+                color: Colors.white,
                 shape: BoxShape.rectangle,
                 boxShadow: const <BoxShadow>[
                   BoxShadow(
@@ -144,9 +143,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text(
                     item.name,
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
