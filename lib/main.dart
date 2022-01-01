@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ToDoItem> _todo = [];
-  List<Widget>? get _items => _todo.map((item) => format(item)).toList();
+  List<Widget> get _items => _todo.map((item) => format(item)).toList();
   String _name = '';
 
   void _create(BuildContext context) {
@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () => _save(),
             child: Text("Save"),
           ),
         ],
@@ -65,7 +65,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _save() async {
     Navigator.of(context).pop();
-    ToDoItem item = ToDoItem();
+    ToDoItem item = ToDoItem(name: _name);
+
+    await DB.insert(ToDoItem.table, item);
+    setState(() => _name = '');
+    refresh();
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
+
+  Future<void> refresh() async {
+    List<Map<String, dynamic>> results = await DB.query(ToDoItem.table);
+    _todo = results.map((item) => ToDoItem.fromMap(item)).toList();
+    setState(() {});
   }
 
   @override
@@ -74,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
         child: ListView(
-          children: const [
-            Padding(
+          children: [
+            const Padding(
               padding: EdgeInsets.fromLTRB(20, 20, 0, 10),
               child: Text(
                 "To-Do",
@@ -84,6 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 25,
                     fontWeight: FontWeight.bold),
               ),
+            ),
+            ListView(
+              children: _items,
+              shrinkWrap: true,
             ),
           ],
         ),
@@ -100,9 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Padding(
         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
         child: Dismissible(
+          onDismissed: (DismissDirection dismiss) {
+            DB.delete(ToDoItem.table, item);
+            refresh();
+          },
           key: Key(item.id.toString()),
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
                 color: Theme.of(context).primaryColor,
@@ -114,14 +138,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     offset: Offset(0, 10),
                   )
                 ]),
-            child: Expanded(
-              child: Text(
-                item.name,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item.name,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ));

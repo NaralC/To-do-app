@@ -1,11 +1,11 @@
 class ToDoItem {
   static String table = 'todo';
 
-  final int id;
+  final int? id;
   final String name;
 
   ToDoItem({
-    required this.id,
+    this.id,
     required this.name,
   });
 
@@ -16,10 +16,10 @@ class ToDoItem {
     };
   }
 
-  factory ToDoItem.fromMap(Map<String, dynamic> map) {
+  static ToDoItem fromMap(Map<String, dynamic> map) {
     return ToDoItem(
-      id: map['id']?.toInt() ?? 0,
-      name: map['name'] ?? '',
+      id: map['id'],
+      name: map['name'],
     );
   }
 }

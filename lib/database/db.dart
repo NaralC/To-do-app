@@ -40,5 +40,15 @@ abstract class DB {
     }
   }
 
-  static insert(String table) {}
+  static insert(String table, ToDoItem todo) async {
+    return await _db!.insert(table, todo.toMap());
+  }
+
+  static query(String table) async {
+    return await _db!.query(table);
+  }
+
+  static Future<int> delete(String table, ToDoItem todo) async {
+    return await _db!.delete(table, where: 'id = ?', whereArgs: [todo.id]);
+  }
 }
